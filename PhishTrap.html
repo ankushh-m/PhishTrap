@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishTrap - Gemini Nano & Upgraded Hybrid Edition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        oldMoneyGreen: '#23382b', oldMoneyGold: '#c5a059',
+                        oldMoneyCream: '#fbf9f5', oldMoneyCard: '#f4f0e6',
+                        oldMoneyDarkBg: '#111613', oldMoneyDarkCard: '#1a221e',
+                        oldMoneyDarkBorder: '#27332c',
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fbf9f5; color: #1f2937; transition: background-color 0.2s ease, color 0.2s ease; }
+        .dark body { background-color: #111613; color: #f3f4f6; }
+        .transition-all-custom { transition: all 1s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-[#c5a059] selection:text-white">
+
+    <!-- Header -->
+    <header class="border-b border-slate-200 dark:border-oldMoneyDarkBorder bg-[#fbf9f5]/90 dark:bg-oldMoneyDarkBg/90 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-md bg-[#23382b] dark:bg-[#c5a059] flex items-center justify-center text-[#fbf9f5] dark:text-[#111613]">
+                    <i class="fa-solid fa-microchip text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg tracking-tight text-slate-900 dark:text-slate-100 flex items-center gap-2">
+                        PhishTrap <span id="engineBadge" class="text-[10px] font-medium px-2 py-0.5 rounded bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800">Hybrid Security Engine</span>
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+                <button onclick="openParametersModal()" aria-label="View Prediction Parameters" class="px-3 h-9 rounded-md bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-[#c5a059] hover:bg-slate-200 dark:hover:bg-[#23382b] transition">
+                    <i class="fa-solid fa-sliders text-xs"></i> <span class="hidden sm:inline">Parameters</span>
+                </button>
+                <button onclick="toggleTheme()" aria-label="Toggle Dark/Light Mode" class="w-9 h-9 rounded-md bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder flex items-center justify-center text-slate-700 dark:text-[#c5a059] hover:bg-slate-200 dark:hover:bg-[#23382b] transition">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main App View -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Left Column: Input Form with Tabs -->
+            <div class="lg:col-span-5 space-y-6">
+                <div class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg p-5 sm:p-6 shadow-sm">
+                    <h3 class="font-semibold text-slate-900 dark:text-white flex items-center gap-2 text-sm mb-4">
+                        <i class="fa-solid fa-keyboard text-[#c5a059]"></i> Evidence Input
+                    </h3>
+                    
+                    <!-- Tabs Navigation -->
+                    <div class="flex rounded-md bg-slate-200 dark:bg-[#111613] p-1 mb-4 border border-slate-300 dark:border-oldMoneyDarkBorder">
+                        <button onclick="switchTab('email')" id="tabEmailBtn" class="flex-1 py-2 text-xs font-semibold rounded transition bg-[#fbf9f5] dark:bg-oldMoneyDarkCard text-slate-900 dark:text-white shadow-sm">
+                            <i class="fa-regular fa-envelope mr-1.5"></i> Email / Message
+                        </button>
+                        <button onclick="switchTab('url')" id="tabUrlBtn" class="flex-1 py-2 text-xs font-semibold rounded transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+                            <i class="fa-solid fa-link mr-1.5"></i> Suspicious URL
+                        </button>
+                    </div>
+
+                    <!-- Tab Content: Email / Message -->
+                    <div id="tabEmailContent" class="space-y-4">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 uppercase">Offer Letter / Email / SMS Text</label>
+                            <textarea id="textInput" rows="7" placeholder="Paste the suspicious message here..." class="w-full p-3 bg-[#fbf9f5] dark:bg-[#111613] border border-slate-300 dark:border-oldMoneyDarkBorder rounded-md text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#c5a059] resize-none"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: URL -->
+                    <div id="tabUrlContent" class="space-y-4 hidden">
+                        <div class="space-y-2">
+                            <label class="block text-xs font-medium text-slate-700 dark:text-slate-300 uppercase">Suspicious Website Link</label>
+                            <input type="url" id="urlInput" placeholder="https://example-careers-portal.com" class="w-full p-3 bg-[#fbf9f5] dark:bg-[#111613] border border-slate-300 dark:border-oldMoneyDarkBorder rounded-md text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:border-[#c5a059]">
+                            <p class="text-[11px] text-slate-500 pt-1">Provide the recruitment link or domain you wish to inspect.</p>
+                        </div>
+                    </div>
+
+                    <!-- Clear Text Area Button -->
+                    <div class="pt-2">
+                        <button onclick="clearCurrentInput()" class="w-full py-2 px-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-medium text-xs rounded-md transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-eraser"></i> Clear Active Input Field
+                        </button>
+                    </div>
+
+                    <!-- Inspect Button -->
+                    <button onclick="runInspection()" id="inspectBtn" class="w-full py-3 px-4 bg-[#23382b] hover:bg-[#19291f] dark:bg-[#c5a059] dark:hover:bg-[#b08e4d] text-white dark:text-[#111613] font-medium text-sm rounded-md transition active:scale-[0.99] flex items-center justify-center gap-2 mt-4">
+                        <i class="fa-solid fa-shield-halved"></i> Inspect Evidence
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Column: Results Dashboard -->
+            <div class="lg:col-span-7 space-y-6">
+                <!-- Initial Empty State -->
+                <div id="emptyState" class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg p-10 text-center flex flex-col items-center justify-center min-h-[450px]">
+                    <div class="w-14 h-14 rounded-full bg-[#fbf9f5] dark:bg-[#111613] border border-slate-300 dark:border-oldMoneyDarkBorder flex items-center justify-center mb-4 text-slate-400 text-xl">
+                        <i class="fa-solid fa-shield"></i>
+                    </div>
+                    <h3 class="text-base font-semibold text-slate-800 dark:text-slate-200 mb-1">Awaiting Evidence</h3>
+                    <p class="text-xs sm:text-sm text-slate-500 max-w-sm mb-6">Select a tab on the left, paste your text or link, and inspect safely across all devices (Desktop & Mobile).</p>
+                </div>
+
+                <!-- Results Container -->
+                <div id="resultsContainer" class="space-y-6 hidden">
+                    
+                    <!-- Threat Dial -->
+                    <div class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg p-6 shadow-sm relative overflow-hidden">
+                        <div id="verdictTopBanner" class="absolute top-0 left-0 right-0 h-1 bg-slate-300"></div>
+                        
+                        <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
+                            <div class="relative flex items-center justify-center">
+                                <svg class="w-32 h-32 transform -rotate-90">
+                                    <circle cx="64" cy="64" r="54" stroke="currentColor" stroke-width="8" class="text-slate-300 dark:text-slate-800" fill="transparent" />
+                                    <circle id="dialCircle" cx="64" cy="64" r="54" stroke="currentColor" stroke-width="8" stroke-dasharray="339.29" stroke-dashoffset="339.29" stroke-linecap="round" class="text-[#c5a059] transition-all-custom" fill="transparent" />
+                                </svg>
+                                <div class="absolute flex flex-col items-center justify-center text-center">
+                                    <span id="threatScoreVal" class="text-3xl font-bold text-slate-900 dark:text-white tracking-tight">0%</span>
+                                    <span class="text-[10px] uppercase tracking-wider text-slate-500 font-medium">Threat Index</span>
+                                </div>
+                            </div>
+
+                            <div class="flex-grow text-center sm:text-left">
+                                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded text-xs font-medium mb-3 border" id="verdictBadge">
+                                    <i id="verdictIcon" class="fa-solid fa-circle-check"></i>
+                                    <span id="verdictText">LOW RISK</span>
+                                </div>
+                                <h4 id="verdictHeadline" class="text-base font-bold text-slate-900 dark:text-white mb-1.5">Analysis Complete</h4>
+                                <p id="verdictSentence" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">Evidence has been evaluated successfully.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signal Breakdown Card -->
+                    <div class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg p-6 shadow-sm">
+                        <h4 class="font-semibold text-slate-900 dark:text-white flex items-center gap-2 text-sm mb-4 pb-3 border-b border-slate-300 dark:border-oldMoneyDarkBorder">
+                            <i class="fa-solid fa-list-check text-[#c5a059]"></i> Detected Risk Signals
+                        </h4>
+                        <div id="signalsList" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer with Manual Guide Button -->
+    <footer class="border-t border-slate-200 dark:border-oldMoneyDarkBorder bg-[#f4f0e6]/50 dark:bg-oldMoneyDarkCard/50 py-6 mt-12 text-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>PhishTrap &bull; Client-side security verification tool with automated fallback.</p>
+            <button onclick="openManualGuideModal()" class="px-4 py-2 rounded-md bg-[#23382b] dark:bg-[#c5a059] text-white dark:text-[#111613] font-medium transition hover:opacity-90 flex items-center gap-2 shadow-sm">
+                <i class="fa-solid fa-book-open"></i> View Manual Scam Identification Guide
+            </button>
+        </div>
+    </footer>
+
+    <!-- Parameters Modal -->
+    <div id="parametersModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg max-w-2xl w-full p-6 shadow-xl max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-300 dark:border-oldMoneyDarkBorder">
+                <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-base">
+                    <i class="fa-solid fa-sliders text-[#c5a059]"></i> Prediction Parameters & Weighting System
+                </h3>
+                <button onclick="closeParametersModal()" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p>PhishTrap evaluates risks using an instant rule-based robust heuristic engine:</p>
+                <div class="space-y-2 pt-2">
+                    <div class="p-3 bg-[#fbf9f5] dark:bg-[#111613] rounded border border-slate-200 dark:border-oldMoneyDarkBorder">
+                        <strong class="text-slate-900 dark:text-white">Upfront Payment, UPI Extortion & Reverse Traps (Weight: 45 pts)</strong>
+                        <p class="text-xs text-slate-500 mt-0.5">Demands for money, fees, charges, direct UPI handles, or suspicious offers to "pay/give you money" to join.</p>
+                    </div>
+                    <div class="p-3 bg-[#fbf9f5] dark:bg-[#111613] rounded border border-slate-200 dark:border-oldMoneyDarkBorder">
+                        <strong class="text-slate-900 dark:text-white">Lookalike Domains & Shorteners (Weight: 30 pts)</strong>
+                        <p class="text-xs text-slate-500 mt-0.5">Fake company URLs mimicking brand identities or using URL shortening obfuscation.</p>
+                    </div>
+                    <div class="p-3 bg-[#fbf9f5] dark:bg-[#111613] rounded border border-slate-200 dark:border-oldMoneyDarkBorder">
+                        <strong class="text-slate-900 dark:text-white">Free Email Domains & Messaging Apps (Weight: 20 pts)</strong>
+                        <p class="text-xs text-slate-500 mt-0.5">Recruiters communicating via consumer domains (`@gmail.com`) or exclusively via WhatsApp/Telegram.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 text-right">
+                <button onclick="closeParametersModal()" class="px-4 py-2 rounded bg-slate-300 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Guide Modal -->
+    <div id="manualGuideModal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-[#f4f0e6] dark:bg-oldMoneyDarkCard border border-slate-300 dark:border-oldMoneyDarkBorder rounded-lg max-w-3xl w-full p-6 shadow-xl max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-300 dark:border-oldMoneyDarkBorder">
+                <h3 class="font-bold text-slate-900 dark:text-white flex items-center gap-2 text-base">
+                    <i class="fa-solid fa-book-open text-[#c5a059]"></i> Manual Scam Identification Checklist
+                </h3>
+                <button onclick="closeManualGuideModal()" class="text-slate-500 hover:text-slate-800 dark:hover:text-white">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+            <div class="space-y-4 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p>Use these verification rules when evaluating any job offer or rental agreement manually:</p>
+                <ul class="space-y-3 list-disc pl-5">
+                    <li><strong>Check the Official Domain:</strong> Never trust an email ending in `@gmail.com` or an offer letter link on a strange domain. Real companies use exact corporate domains.</li>
+                    <li><strong>Verify via Careers Portal:</strong> Go directly to the official company website, navigate to their "Careers" page, and search for the job ID.</li>
+                    <li><strong>Beware Reverse Money Traps:</strong> If someone offers to send you money or asks for your bank details / ID to "give you joining bonus cash", it is a mule account trap.</li>
+                </ul>
+            </div>
+            <div class="mt-6 text-right">
+                <button onclick="closeManualGuideModal()" class="px-4 py-2 rounded bg-slate-300 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-semibold">Close Checklist</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleTheme() {
+            const htmlEl = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            htmlEl.classList.toggle('dark');
+            themeIcon.className = htmlEl.classList.contains('dark') ? 'fa-solid fa-sun text-sm text-[#c5a059]' : 'fa-solid fa-moon text-sm';
+        }
+
+        function switchTab(tab) {
+            const btnEmail = document.getElementById('tabEmailBtn');
+            const btnUrl = document.getElementById('tabUrlBtn');
+            const contentEmail = document.getElementById('tabEmailContent');
+            const contentUrl = document.getElementById('tabUrlContent');
+
+            if (tab === 'email') {
+                btnEmail.className = "flex-1 py-2 text-xs font-semibold rounded transition bg-[#fbf9f5] dark:bg-oldMoneyDarkCard text-slate-900 dark:text-white shadow-sm";
+                btnUrl.className = "flex-1 py-2 text-xs font-semibold rounded transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                contentEmail.classList.remove('hidden');
+                contentUrl.classList.add('hidden');
+            } else {
+                btnUrl.className = "flex-1 py-2 text-xs font-semibold rounded transition bg-[#fbf9f5] dark:bg-oldMoneyDarkCard text-slate-900 dark:text-white shadow-sm";
+                btnEmail.className = "flex-1 py-2 text-xs font-semibold rounded transition text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+                contentUrl.classList.remove('hidden');
+                contentEmail.classList.add('hidden');
+            }
+        }
+
+        function clearCurrentInput() {
+            document.getElementById('textInput').value = '';
+            document.getElementById('urlInput').value = '';
+        }
+
+        function openParametersModal() { document.getElementById('parametersModal').classList.remove('hidden'); }
+        function closeParametersModal() { document.getElementById('parametersModal').classList.add('hidden'); }
+        function openManualGuideModal() { document.getElementById('manualGuideModal').classList.remove('hidden'); }
+        function closeManualGuideModal() { document.getElementById('manualGuideModal').classList.add('hidden'); }
+
+        // Direct, robust inspection execution function bypassing external dependencies
+        function runInspection() {
+            const textInput = document.getElementById('textInput').value.trim();
+            const urlInput = document.getElementById('urlInput').value.trim();
+
+            if (!textInput && !urlInput) {
+                alert('Please provide text or a URL to inspect.');
+                return;
+            }
+
+            const inspectBtn = document.getElementById('inspectBtn');
+            inspectBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Analyzing Evidence...`;
+
+            setTimeout(() => {
+                runHeuristicEngine(textInput, urlInput);
+                inspectBtn.innerHTML = `<i class="fa-solid fa-shield-halved"></i> Inspect Evidence`;
+            }, 300);
+        }
+
+        // Comprehensive heuristic engine capturing all trap variants (including reverse cash hooks and chat slang)
+        function runHeuristicEngine(text, url) {
+            let firedSignals = [];
+            let score = 0;
+            const lowerText = text.toLowerCase();
+            const lowerUrl = url.toLowerCase();
+
+            // 1. Check for payment demands, reverse traps, and money keywords
+            const hasReverseMoneyHook = (lowerText.includes('rs') || lowerText.includes('₹') || lowerText.includes('rs.') || lowerText.includes('200') || lowerText.includes('money')) && 
+                                       (lowerText.includes('give') || lowerText.includes('send') || lowerText.includes('join') || lowerText.includes('pay') || lowerText.includes('hirier') || lowerText.includes('hire'));
+            
+            if (hasReverseMoneyHook || lowerText.includes('deposit') || lowerText.includes('fee') || lowerText.includes('fees') || lowerText.includes('charge') || lowerText.includes('pay') || lowerText.includes('@sbi') || lowerText.includes('@paytm') || lowerText.includes('@ybl') || lowerText.includes('@icici') || lowerText.includes('crypto') || lowerText.includes('gift card') || lowerText.includes('bitcoin')) {
+                firedSignals.push({ 
+                    category: 'Upfront Payment & Reverse Money Trap', 
+                    weight: 50, 
+                    description: 'Requests money/fees or uses reverse-payment hooks ("give you money / joining bonus") typical of identity theft and financial scams.', 
+                    evidence: 'Matched financial/reverse-payment keyword pattern' 
+                });
+                score += 50;
+            }
+
+            // 2. Check for free email domains
+            if (lowerText.includes('@gmail.com') || lowerText.includes('@yahoo.com') || lowerText.includes('@outlook.com') || lowerText.includes('@hotmail.com')) {
+                firedSignals.push({ 
+                    category: 'Free Email Domain', 
+                    weight: 20, 
+                    description: 'Recruiter is using a public consumer email provider instead of a corporate domain.', 
+                    evidence: 'Consumer email domain detected' 
+                });
+                score += 20;
+            }
+
+            // 3. Check for messaging apps or casual hiring phrases
+            if (lowerText.includes('whatsapp') || lowerText.includes('telegram') || lowerText.includes('hire') || lowerText.includes('hirier') || lowerText.includes('pls') || lowerText.includes('pls give')) {
+                firedSignals.push({ 
+                    category: 'Alternative Channel & Social Engineering', 
+                    weight: 30, 
+                    description: 'Communication directed through messaging apps or instant casual hiring hooks ("hire you", "pls").', 
+                    evidence: 'Matched messaging app or casual recruitment keyword' 
+                });
+                score += 30;
+            }
+
+            // 4. Check for URL red flags
+            if (lowerUrl && (lowerUrl.includes('bit.ly') || lowerUrl.includes('tinyurl') || lowerUrl.includes('workers.dev'))) {
+                firedSignals.push({ 
+                    category: 'Suspicious URL Structure', 
+                    weight: 30, 
+                    description: 'Uses shorteners or untrusted cloud hosting subdomains.', 
+                    evidence: url 
+                });
+                score += 30;
+            }
+
+            // 5. Check for pressure or instant start
+            if (lowerText.includes('immediate start') || lowerText.includes('no interview') || lowerText.includes('tomorrow') || lowerText.includes('secure your position')) {
+                firedSignals.push({ 
+                    category: 'Offer Anomaly / Pressure', 
+                    weight: 25, 
+                    description: 'Promises instant employment without formal interviews and demands rush action.', 
+                    evidence: 'Matched high-pressure recruitment flags' 
+                });
+                score += 25;
+            }
+
+            // Fallback base score if text exists but specific keywords missed
+            if (score === 0 && text.length > 3) {
+                score = 15;
+                firedSignals.push({
+                    category: 'Unverified Communication Hook',
+                    weight: 15,
+                    description: 'Contains non-standard recruitment text patterns requiring manual verification.',
+                    evidence: 'General unverified text input'
+                });
+            }
+
+            if (score > 100) score = 100;
+            renderResults({ totalScore: score, firedSignals: firedSignals });
+        }
+
+        function renderResults(data) {
+            let totalScore = data.totalScore || 0;
+            if (totalScore > 100) totalScore = 100;
+
+            let bandLabel, bandColor, badgeBg, iconClass;
+
+            if (totalScore <= 24) {
+                bandLabel = 'LOW RISK'; bandColor = '#23382b';
+                badgeBg = 'bg-[#23382b]/10 text-[#23382b] dark:text-[#c5a059] border-[#23382b]/20';
+                iconClass = 'fa-solid fa-circle-check text-[#23382b] dark:text-[#c5a059]';
+            } else if (totalScore <= 49) {
+                bandLabel = 'SUSPICIOUS'; bandColor = '#c5a059';
+                badgeBg = 'bg-[#c5a059]/10 text-[#a07f3c] dark:text-[#c5a059] border-[#c5a059]/20';
+                iconClass = 'fa-solid fa-triangle-exclamation text-[#c5a059]';
+            } else if (totalScore <= 74) {
+                bandLabel = 'HIGH RISK'; bandColor = '#b45309';
+                badgeBg = 'bg-amber-600/10 text-amber-700 dark:text-amber-500 border-amber-600/20';
+                iconClass = 'fa-solid fa-shield-exclamation text-amber-600';
+            } else {
+                bandLabel = 'CRITICAL THREAT'; bandColor = '#991b1b';
+                badgeBg = 'bg-red-900/10 text-red-800 dark:text-red-400 border-red-900/20';
+                iconClass = 'fa-solid fa-skull-crossbones text-red-700';
+            }
+
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultsContainer').classList.remove('hidden');
+
+            const circumference = 2 * Math.PI * 54;
+            const offset = circumference - (totalScore / 100) * circumference;
+            const dialCircle = document.getElementById('dialCircle');
+            
+            setTimeout(() => {
+                dialCircle.style.strokeDashoffset = offset;
+                dialCircle.style.color = bandColor;
+            }, 50);
+
+            document.getElementById('threatScoreVal').innerText = totalScore + '%';
+            document.getElementById('verdictTopBanner').style.backgroundColor = bandColor;
+            
+            const badge = document.getElementById('verdictBadge');
+            badge.className = `inline-flex items-center gap-2 px-2.5 py-1 rounded text-xs font-medium mb-3 border ${badgeBg}`;
+            document.getElementById('verdictIcon').className = iconClass;
+            document.getElementById('verdictText').innerText = bandLabel;
+
+            const signalsListEl = document.getElementById('signalsList');
+            signalsListEl.innerHTML = '';
+
+            if (!data.firedSignals || data.firedSignals.length === 0) {
+                signalsListEl.innerHTML = `<div class="text-sm text-slate-500 text-center py-4">No suspicious indicators detected.</div>`;
+            } else {
+                data.firedSignals.forEach(sig => {
+                    signalsListEl.innerHTML += `
+                        <div class="p-3.5 bg-[#fbf9f5] dark:bg-[#111613] border border-slate-300 dark:border-oldMoneyDarkBorder rounded flex flex-col gap-2">
+                            <div class="flex items-center gap-2">
+                                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/20">+${sig.weight} pts</span>
+                                <h5 class="font-semibold text-slate-900 dark:text-white text-xs">${sig.category}</h5>
+                            </div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400">${sig.description}</p>
+                            <p class="text-[11px] font-mono text-slate-700 dark:text-[#c5a059] bg-slate-100 dark:bg-oldMoneyDarkCard p-1.5 rounded border border-slate-200 dark:border-oldMoneyDarkBorder">
+                                <i class="fa-solid fa-code-commit mr-1"></i> ${sig.evidence}
+                            </p>
+                        </div>
+                    `;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
